@@ -1,86 +1,113 @@
+import 'package:bytes_task/src/application/product/product_bloc.dart';
+import 'package:bytes_task/src/presentation/home/api_handling_widget/loading.dart';
+import 'package:bytes_task/src/presentation/home/widgets/product_grid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'widgets/slider_widgets/slider_widget.dart';
+import '../../core/size/height.dart';
+import '../../domain/category/model/category_model.dart';
+import 'api_handling_widget/error_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+
+  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(
-        leading:
-            IconButton(onPressed: () {}, icon: Icon(Icons.arrow_back_ios_new)),
-        title: Text('huguu'),
-        centerTitle: true,
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search))],
-      ),
-      body: Row(
-        children: [
-          SliderWidget(),
-          Divider(
-            height: double.infinity,
-            thickness: 0.5,
-           color: Colors.red,
+    return BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
+      if (state.isLoading) {
+        return Loading();
+      } else if (state.hasError) {
+        return ErrorWidgeted(
+          title: 'No Data Found',
+        );
+      } else if (state.categories.isEmpty) {
+        return ErrorWidgeted(title: 'No Category founded');
+      }
+      return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              _selectedIndex == -1
+                  ? "Select a Category"
+                  : state.categories
+                      .firstWhere(
+                          (category) => category.id == state.selectedCategoryId,
+                          orElse: () => Category(
+                                id: 0.toString(),
+                                title: "Select Category",
+                                isSelected: true,
+                                image: '',
+                              ))
+                      .title,
+            ),
+            centerTitle: true,
           ),
-          Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 0.75,
-              ),
-                  itemBuilder: (context, index){
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.r)
-                    ),
-                    elevation: 3,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          flex:2,
-                            child: Padding(padding: EdgeInsets.all(10.w),
-                            child: Image.asset('',fit: BoxFit.contain,),
-                            )),
-                        Padding(padding: EdgeInsets.symmetric(horizontal: 8.w),
-                        child: Text('jhjj',style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
-
-                        ),
-                        maxLines: 2,overflow: TextOverflow.ellipsis,),),
-                        Padding(padding: EdgeInsets.symmetric(horizontal: 8.w,vertical: 4.h),
-                        child: Text('Weight',style: TextStyle(
-                          color: Colors.grey,fontSize: 12.sp
-                        ),),
-                        ),
-                        Padding(padding: EdgeInsets.symmetric(horizontal: 8.w),
-                        child: Row(
+          body: Row(
+            children: [
+              SizedBox(
+                width: 80.w,
+                height: double.infinity,
+                child: ListView.builder(
+                    itemCount: state.categories.length,
+                    itemBuilder: (context, index) {
+                      final category = state.categories[index];
+                      return Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        child: Column(
                           children: [
-                            Text('data',style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.bold
-                            ),),
-                            SizedBox(width: 5.w,),
-                            Text('data',style:TextStyle(
-                              fontSize: 12.sp,
-                              decoration: TextDecoration.lineThrough,
-                              color: Colors.grey,
-
-                            ),)
+                            GestureDetector(
+                              onTap: () {
+                                context
+                                    .read<ProductBloc>()
+                                    .add(ChangeCategory(category.id));
+                                context
+                                    .read<ProductBloc>()
+                                    .add(FetchProducts(category.id, 1));
+                              },
+                              child: Container(
+                                height: 50.h,
+                                width: 50.w,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: NetworkImage(
+                                        category.image,
+                                      ),
+                                      fit: BoxFit.cover),
+                                  shape: BoxShape.circle,
+                                  color: _selectedIndex == index
+                                      ? Colors.green.shade50
+                                      : Colors.grey[300],
+                                ),
+                              ),
+                            ),
+                            kHeight5,
+                            Text(
+                              category.title,
+                              style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.bold,
+                                  overflow: TextOverflow.ellipsis),
+                            )
                           ],
-                        ),),
-
-                      ],
-                    ),
-                  );
-                  }))
-        ],
-      ),
-    ));
+                        ),
+                      );
+                    }),
+              ),
+              Flexible(
+                  child: AnimatedSwitcher(
+                duration: Duration(milliseconds: 300),
+                child: ProductGrid(),
+              ))
+            ],
+          ));
+    });
   }
 }
