@@ -27,7 +27,7 @@ class ProductRepository {
       final response = await Dio(BaseOptions())
           .get("${ApiEndPoints.product}$categoryId/$page");
       log("Response Data: ${response.data}");
-      log("Response : ${response}");
+      log("Response : $response");
 
       if (response.data["success"] == true) {
         final List<dynamic> productData = response.data["data"]["products"];

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'application/product/product_bloc.dart';
 import 'core/theme/themes.dart';
-import 'domain/core/di/injectable.dart';
 import 'infrastructure/category_repo.dart';
 import 'presentation/home/home_screen.dart';
 

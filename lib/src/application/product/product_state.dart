@@ -4,17 +4,17 @@ part of 'product_bloc.dart';
 class ProductState with _$ProductState {
   const factory ProductState(
       {required bool isLoading,
-      required bool hasError,
-      required List<Category> categories,
-      required List<Product> products,
-      String? selectedCategoryId,
-      int? currentPage,
+        required bool hasError,
+        required List<Category> categories,
+        required List<Product> products,
+        String? selectedCategoryId,
+        int? currentPage,
       }) = _Initial;
   factory ProductState.initial() => const ProductState(
-      isLoading: false,
+    isLoading: false,
     hasError: false,
-      categories: [],
-      products: [],
-      currentPage: 1,
-      selectedCategoryId: null, );
+    categories: [],
+    products: [],
+    currentPage: 1,
+    selectedCategoryId: null, );
 }

@@ -18,7 +18,7 @@ class CustomText extends StatelessWidget {
       padding:padding!,
       child: Text(
         maxLines: maxLines ?? 1, // Default: 1 line
-        title ?? "No Text",
+        title ,
         style:
         TextStyle(fontWeight: FontWeight.bold, fontSize: fontSize),
         overflow: overflow ?? TextOverflow.ellipsis,

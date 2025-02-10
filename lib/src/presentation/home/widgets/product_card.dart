@@ -64,13 +64,13 @@ class ProductCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      productPrize as String,
+                      productPrize ,
                       style: TextStyle(
                           fontSize: 14.sp, fontWeight: FontWeight.bold),
                     ),
                     kWidth10,
                     Text(
-                      discountPrize as String,
+                      discountPrize ,
                       style: TextStyle(
                           fontSize: 12.sp,
                           decoration: TextDecoration.lineThrough,

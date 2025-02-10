@@ -16,29 +16,49 @@ class ProductGrid extends StatefulWidget {
 }
 
 class _ProductGridState extends State<ProductGrid> {
+  // final ScrollController _scrollController = ScrollController();
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   context.read<ProductBloc>().add(FetchCategories());
+  //   context.read<ProductBloc>().add(FetchProducts(1 as String  , 1));
+  //   final String categoryId = context.read<ProductBloc>().state.selectedCategoryId.toString();
+  //
+  //   _scrollController.addListener(() {
+  //     if (_scrollController.position.pixels >=
+  //         _scrollController.position.maxScrollExtent - 200) {
+  //
+  //       context.read<ProductBloc>().add(LoadMoreProducts(categoryId));
+  //     }
+  //   });
+  // }...
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(child: Scaffold(
         body: BlocBuilder<ProductBloc, ProductState>(builder: (context, state) {
       if (state.isLoading) {
         return Loading();
       } else if (state.hasError) {
-        return ErrorWidgeted(title: 'No Data Found',);
-      } else {
-        return GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 5,
-              mainAxisSpacing: 10,
-              childAspectRatio: 0.75,
-            ),
-            itemCount: state.products.length,
-            // +(hasMoreData ? 1:0),
-            itemBuilder: (context, index) {
-              final product = state.products[index];
-              return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 2.w),
-                  child: ProductCard(
+        return ErrorWidgeted(
+          title: 'No Data Found',
+        );
+      }
+      return GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 5,
+            mainAxisSpacing: 10,
+            childAspectRatio: 0.75,
+          ),
+          itemCount: state.products.length,
+          // + (state.hasMoreData ? 1:0),
+          itemBuilder: (context, index) {
+            final product = state.products[index];
+            return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2.w),
+                child: ProductCard(
                     imageUrl: product.image.isNotEmpty
                         ? product.image.first.url
                         : "https://via.placeholder.com/150",
@@ -55,11 +75,8 @@ class _ProductGridState extends State<ProductGrid> {
                           ),
                         ),
                       );
-                    },
-                  ));
-            });
-        //return Loading();
-      }
-    }));
+                    }));
+          });
+    })));
   }
 }

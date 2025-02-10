@@ -1,29 +1,8 @@
-// import 'package:bloc/bloc.dart';
-// import 'package:bytes_task/src/domain/category/model/category_model.dart';
-// import 'package:freezed_annotation/freezed_annotation.dart';
-//
-// import '../../domain/product/model/product_model.dart';
-// import '../../infrastructure/category_repo.dart';
-//
-// part 'product_event.dart';
-// part 'product_state.dart';
-// part 'product_bloc.freezed.dart';
-//
-// class ProductBloc extends Bloc<ProductEvent, ProductState> {
-//   final ProductRepository _repository;
-//
-//   ProductBloc(this._repository) : super( ProductState.initial()) {
-//     on<FetchCategories>((event, emit) {
-//
-//       // TODO: implement event handler
-//     });
-//   }
-// }
+
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
 import 'package:bytes_task/src/domain/category/model/category_model.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../domain/product/model/product_model.dart';
@@ -61,7 +40,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     emit(state.copyWith(isLoading: true));
     try {
       final products =
-          await _repository.getProducts(event.categoryId, event.page);
+      await _repository.getProducts(event.categoryId, event.page);
       emit(state.copyWith(
         products: products,
         isLoading: false,
